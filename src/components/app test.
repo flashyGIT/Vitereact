@@ -1,0 +1,108 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest'
+import { render, screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import App from '../../APP.JSX'
+
+describe('App', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('renders the products and empty cart', () => {
+    render(<App />)
+
+    expect(
+      screen.getByRole('heading', { name: /our products/i })
+    ).toBeInTheDocument()
+
+    expect(
+      screen.getByText(/your cart is empty/i)
+    ).toBeInTheDocument()
+
+    expect(
+      screen.getByText('Wireless Headphones')
+    ).toBeInTheDocument()
+  })
+
+  it('loads the cart from localStorage on startup', () => {
+    const savedCart = [
+      {
+        id: 1,
+        name: 'Wireless Headphones',
+        price: 99.99,
+        image: 'https://placehold.co/600x400',
+        description: 'Premium noise-cancelling headphones',
+      },
+    ]
+
+    localStorage.setItem('cart', JSON.stringify(savedCart))
+
+    render(<App />)
+
+    const cartSection = screen.getByRole('heading', {
+      name: /shopping cart/i,
+    }).parentElement
+
+    expect(
+      within(cartSection).getByText('Wireless Headphones')
+    ).toBeInTheDocument()
+  })
+
+  it('saves cart changes to localStorage', async () => {
+    const user = userEvent.setup()
+
+    render(<App />)
+
+    const productCard = screen
+      .getByRole('heading', { name: 'Wireless Headphones' })
+      .closest('.product-card')
+
+    await user.click(
+      within(productCard).getByRole('button', {
+        name: /add to cart/i,
+      })
+    )
+
+    await waitFor(() => {
+      const savedCart = JSON.parse(localStorage.getItem('cart'))
+
+      expect(savedCart).toHaveLength(1)
+      expect(savedCart[0].name).toBe('Wireless Headphones')
+    })
+  })
+
+  it('removes items and persists the updated cart', async () => {
+    const user = userEvent.setup()
+
+    localStorage.setItem(
+      'cart',
+      JSON.stringify([
+        {
+          id: 1,
+          name: 'Wireless Headphones',
+          price: 99.99,
+          image: 'https://placehold.co/600x400',
+          description: 'Premium noise-cancelling headphones',
+        },
+      ])
+    )
+
+    render(<App />)
+
+    const cartSection = screen.getByRole('heading', {
+      name: /shopping cart/i,
+    }).parentElement
+
+    await user.click(
+      within(cartSection).getByRole('button', { name: /remove/i })
+    )
+
+    await waitFor(() => {
+      expect(JSON.parse(localStorage.getItem('cart'))).toEqual([])
+    })
+
+    expect(
+      screen.getByText(/your cart is empty/i)
+    ).toBeInTheDocument()
+  })
+})
