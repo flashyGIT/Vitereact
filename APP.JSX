@@ -124,4 +124,25 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
+
+import { useEffect, useState } from 'react'
+Replace:
+
+jsx
+const [cart, setCart] = useState([])
+with:
+
+jsx
+const [cart, setCart] = useState(() => {
+  try {
+    const savedCart = localStorage.getItem('cart')
+    return savedCart ? JSON.parse(savedCart) : []
+  } catch {
+    return []
+  }
+})
+
+useEffect(() => {
+  localStorage.setItem('cart', JSON.stringify(cart))
+}, [cart])
