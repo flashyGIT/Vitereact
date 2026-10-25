@@ -177,3 +177,50 @@ main {
     padding: 20px;
   }
 }
+
+.watchlist-button,
+.remove-watchlist-button {
+  display: inline-block;
+  padding: 10px 16px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2563eb;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.watchlist-button:hover {
+  background-color: #1d4ed8;
+}
+
+.remove-watchlist-button {
+  background-color: #dc2626;
+}
+
+.remove-watchlist-button:hover {
+  background-color: #b91c1c;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.watchlist-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.watchlist-page {
+  padding: 24px;
+}
+
+.watchlist-page h1 {
+  margin-bottom: 24px;
+}
