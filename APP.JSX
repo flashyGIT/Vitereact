@@ -143,6 +143,30 @@ const [cart, setCart] = useState(() => {
   }
 })
 
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { MovieProvider } from "./contexts/MovieContext";
+import Header from "./components/Header";
+import Home from "./pages/Home";
+import Watchlist from "./pages/Watchlist";
+import Favorites from "./pages/Favorites";
+
+function App() {
+  return (
+    <MovieProvider>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/watchlist" element={<Watchlist />} />
+          <Route path="/favorites" element={<Favorites />} />
+        </Routes>
+      </BrowserRouter>
+    </MovieProvider>
+  );
+}
+
+export default App;
+
 useEffect(() => {
   localStorage.setItem('cart', JSON.stringify(cart))
 }, [cart])
